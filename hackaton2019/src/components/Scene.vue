@@ -9,6 +9,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBasicMaterial, Mesh, SphereGeometry, MeshPhongMaterial, ImageUtils, TextureLoader, MeshStandardMaterial } from "three";
 import { GameObject } from '@/game/game-object';
 import { Planet } from '@/game/planet';
+import { PlanetType } from '@/game/enums/planet-type.enum';
 
 @Component
 export default class Scene extends Vue {
@@ -31,10 +32,8 @@ export default class Scene extends Vue {
         this.renderer.setSize(el.clientWidth, el.clientHeight);
         el.append(this.renderer.domElement);
 
-        const planet = PlanetFactory.create();
         const light = LightFactory.create(25, 25, 25);
 
-        //this.scene.add(planet);
         this.scene.add(light);
         this.camera.position.z = 2;
 
