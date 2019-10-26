@@ -7,7 +7,7 @@ export class PlanetFactory {
     private loader = new TextureLoader();
 
     public create(planet: PlanetDefinition): Mesh {
-        const geometry = new SphereGeometry(0.5, 32, 32);
+        const geometry = new SphereGeometry(10, 32, 32);
         const material = this.createPlanetMaterial(
             `${this.imagePath}${planet.type.toString()}/map.jpg`,
             `${this.imagePath}${planet.type.toString()}/bump.jpg`,

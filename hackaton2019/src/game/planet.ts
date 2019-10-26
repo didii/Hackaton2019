@@ -1,4 +1,4 @@
-import { Mesh, Scene, Plane } from "three";
+import { Mesh, Scene } from "three";
 import PlanetFactory from "@/game/factories/planet-factory";
 import { GameObject } from "./game-object";
 import { PlanetType } from '@/game/enums/planet-type.enum';
@@ -34,7 +34,6 @@ export class Planet extends GameObject {
     public update(): void {
         this.rotation.y += 1 / 32 * 0.1;
     }
-
 
     private randomIntFromInterval(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1) + min);
