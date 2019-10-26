@@ -4,8 +4,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
+import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBasicMaterial, Mesh, Vector3 } from 'three';
 import PlanetFactory from '@/services/planet-factory';
+import LightFactory from '@/services/light-factory';
 
 @Component
 export default class Scene extends Vue {
@@ -21,8 +22,10 @@ export default class Scene extends Vue {
         el.append(this.renderer.domElement);
 
         const planet = PlanetFactory.create();
+        const light = LightFactory.create(2, 2, 2);
 
         this.scene.add(planet);
+        this.scene.add(light);
         this.camera.position.z = 5;
 
         const animate = () => {
