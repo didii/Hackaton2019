@@ -12,6 +12,7 @@ import { Planet } from '@/game/planet';
 import { PlanetType } from '@/game/enums/planet-type.enum';
 import {ShipCamera} from '@/game/ship-camera';
 import SceneManager from '@/services/scene-manager';
+import { Ship } from '@/game/ship';
 
 @Component
 export default class Scene extends Vue {
@@ -21,14 +22,14 @@ export default class Scene extends Vue {
 
     private mounted() {
         let el = this.$refs.scene as HTMLDivElement;
-        this.camera = new ShipCamera(el.clientWidth / el.clientHeight);
         this.renderer.setSize(el.clientWidth, el.clientHeight);
         el.append(this.renderer.domElement);
 
-        const light = LightFactory.create(25, 25, 25);
-
+        this.camera = new ShipCamera(el.clientWidth / el.clientHeight);
+        this.camera.init();
+        const ship = SceneManager.addGameObject('ship', new Ship(this.camera.camera));
         SceneManager.addGameObject('earth', new Planet());
-        SceneManager.addObject(light);
+        SceneManager.addObject(LightFactory.create(25, 25, 25));
 
         // Start update frames
         this.animate();
@@ -39,6 +40,7 @@ export default class Scene extends Vue {
         for (const go of SceneManager.gameObjects) {
             go.update();
         }
+        this.camera.update();
         this.renderer.render(SceneManager.scene, this.camera.camera);
     }
 }
