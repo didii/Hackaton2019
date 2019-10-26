@@ -1,8 +1,8 @@
-import { Light, PointLight, SpotLight, Vector3 } from 'three';
+import { Light, PointLight } from 'three';
 
 export class LightFactory {
     public create(x: number, y: number, z: number): Light {
-        const light = new PointLight(0xff000, 1, 100);
+        const light = new PointLight('white', 3, 100);
         if (x && y && z) {
             light.position.set(x, y, z);
         }
