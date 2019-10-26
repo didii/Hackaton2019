@@ -3,28 +3,36 @@ import PlanetFactory from "@/game/factories/planet-factory";
 import { GameObject } from "./game-object";
 import { PlanetType } from '@/game/enums/planet-type.enum';
 import { StaticItems } from '@/game/static-items';
+import { PlanetDefinition } from '@/game/planet-definition';
 
 export class Planet extends GameObject {
     private mesh!: Mesh;
-    private planetType: PlanetType = PlanetType.earth;
+    private planetDefinition: PlanetDefinition = new PlanetDefinition();
 
     constructor(type?: PlanetType) {
         super();
-        if (!type) {
-            this.planetType = StaticItems.planetDefinitions[this.randomIntFromInterval(1, StaticItems.planetDefinitions.length)].type;
-        }else {
-            this.planetType = type;
-        }
+
+        const randomizedType = type ? type : StaticItems.planetDefinitions[this.randomIntFromInterval(1, StaticItems.planetDefinitions.length)].type;
+
+        this.planetDefinition = new PlanetDefinition({
+            type: randomizedType,
+            isStar: randomizedType === PlanetType.sun
+        });
     }
 
     public init(scene: Scene): void {
-        this.mesh = PlanetFactory.create(this.planetType);
-        scene.add(this.mesh);
-        this.mesh.position.set(0, 0, 0);
+        this.mesh = PlanetFactory.create(this.planetDefinition);
+        this.add(this.mesh);
+        scene.add(this);
+        if (this.planetDefinition.isStar) {
+            this.position.set(0, 0, 0);
+        } else {
+            this.position.set(1, 0.5, -0.8);
+        }
     }
 
     public update(): void {
-        this.mesh.rotation.y += 1 / 32 * 0.1;
+        this.rotation.y += 1 / 32 * 0.1;
     }
 
 

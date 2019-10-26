@@ -30,9 +30,10 @@ export default class Scene extends Vue {
 
         this.camera = new ShipCamera(el.clientWidth / el.clientHeight);
         this.camera.init();
+        
         const ship = SceneManager.addGameObject('ship', new Ship(this.camera.camera), new Vector3(0, 0, 10));
-        SceneManager.addGameObject('earth', new Planet());
-        SceneManager.addObject(LightFactory.create(25, 25, 25));
+        SceneManager.addGameObject('earth', new Planet(PlanetType.earth));
+        SceneManager.addGameObject('sun', new Planet(PlanetType.sun));
 
         // Start update frames
         this.animate();

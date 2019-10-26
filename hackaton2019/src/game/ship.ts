@@ -24,7 +24,7 @@ export class Ship extends GameObject {
     }
 
     public init(scene: Scene): void {
-        this.add(this.mesh);
+        //this.add(this.mesh);
         this.add(this.camera);
         
         scene.add(this);

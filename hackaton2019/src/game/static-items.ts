@@ -1,5 +1,6 @@
 import { PlanetDefinition } from '@/game/planet-definition';
 import { PlanetType } from '@/game/enums/planet-type.enum';
+import { Color } from 'three';
 
 export class StaticItems {
     static planetDefinitions = [
@@ -12,6 +13,9 @@ export class StaticItems {
         new PlanetDefinition({ type: PlanetType.pluto }),
         new PlanetDefinition({ type: PlanetType.saturn }),
         new PlanetDefinition({ type: PlanetType.uranus }),
-        new PlanetDefinition({ type: PlanetType.venus })
+        new PlanetDefinition({ type: PlanetType.venus }),
+        new PlanetDefinition({ type: PlanetType.sun })
     ];
+
+    static lightColor = new Color('white');
 }

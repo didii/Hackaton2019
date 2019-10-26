@@ -8,5 +8,6 @@ export enum PlanetType {
     uranus = 'uranus',
     neptune = 'neptune',
     pluto = 'pluto',
-    moon = 'moon'
+    moon = 'moon',
+    sun = 'sun'
 }
