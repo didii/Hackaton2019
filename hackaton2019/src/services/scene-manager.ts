@@ -1,4 +1,4 @@
-import { Scene, Object3D } from 'three';
+import { Scene, Object3D, Vector3 } from 'three';
 import { GameObject } from '@/game/game-object';
 
 export class SceneManager {
@@ -20,7 +20,10 @@ export class SceneManager {
         return obj;
     }
 
-    public addGameObject<T extends GameObject>(name: string, gameObject: T, skipInit?: boolean): T {
+    public addGameObject<T extends GameObject>(name: string, gameObject: T, position?: Vector3, skipInit?: boolean): T {
+        if (position) {
+            gameObject.position.set(position.x, position.y, position.z);
+        }
         this.inSceneGameObjects.push({ name, gameObject });
         if (!skipInit) {
             gameObject.init(this.scene);
@@ -43,6 +46,13 @@ export class SceneManager {
         }
         this.inSceneGameObjects = this.inSceneGameObjects.filter(x => x.name !== name);
     }
+
+    public clear() {
+        while (this.scene.children.length > 0) {
+            this.scene.remove(this.scene.children[0]);
+        }
+        this.inSceneGameObjects = [];
+    }
 }
 
 interface InSceneGameObject {
@@ -50,4 +60,10 @@ interface InSceneGameObject {
     gameObject: GameObject;
 }
 
-export default new SceneManager();
+const sceneManager = new SceneManager();
+
+if (module.hot) {
+    sceneManager.clear();
+}
+
+export default sceneManager;
