@@ -22,7 +22,6 @@ export class Planet extends GameObject {
         });
         this.physics = new PhysicsModule(this);
         this.physics.v_r.set(0, 0.1, 0);
-        this.modules.physics = this.physics;
     }
 
     public init(scene: Scene): void {
@@ -37,7 +36,7 @@ export class Planet extends GameObject {
     }
 
     public update(timeDelta: number): void {
-        super.update(timeDelta);
+        this.physics.update(timeDelta);
     }
 
     private randomIntFromInterval(min: number, max: number): number {

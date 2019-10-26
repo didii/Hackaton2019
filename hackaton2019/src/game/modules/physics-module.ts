@@ -1,7 +1,6 @@
 import { Vector3, Object3D } from 'three';
-import { Module } from './module';
 
-export class PhysicsModule extends Module {
+export class PhysicsModule {
     public a_x: Vector3 = new Vector3();
     public v_x: Vector3 = new Vector3();
     public a_r: Vector3 = new Vector3();
@@ -10,7 +9,6 @@ export class PhysicsModule extends Module {
     public r_drag: number = 0;
 
     constructor(private gameObject: Object3D) {
-        super();
     }
 
     public setA_X(acc: Vector3) {
