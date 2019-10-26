@@ -4,10 +4,12 @@ import { GameObject } from "./game-object";
 import { PlanetType } from '@/game/enums/planet-type.enum';
 import { StaticItems } from '@/game/static-items';
 import { PlanetDefinition } from '@/game/planet-definition';
+import { PhysicsModule } from './modules/physics-module';
 
 export class Planet extends GameObject {
     private mesh!: Mesh;
     private planetDefinition: PlanetDefinition = new PlanetDefinition();
+    private physics: PhysicsModule;
 
     constructor(type?: PlanetType) {
         super();
@@ -18,6 +20,9 @@ export class Planet extends GameObject {
             type: randomizedType,
             isStar: randomizedType === PlanetType.sun
         });
+        this.physics = new PhysicsModule(this);
+        this.physics.v_r.set(0, 0.1, 0);
+        this.modules.physics = this.physics;
     }
 
     public init(scene: Scene): void {
@@ -31,8 +36,8 @@ export class Planet extends GameObject {
         }
     }
 
-    public update(): void {
-        this.rotation.y += 1 / 32 * 0.1;
+    public update(timeDelta: number): void {
+        super.update(timeDelta);
     }
 
     private randomIntFromInterval(min: number, max: number): number {

@@ -1,6 +1,7 @@
-import { Vector3, Quaternion, Object3D } from 'three';
+import { Vector3, Object3D } from 'three';
+import { Module } from './module';
 
-export class PhysicsModule {
+export class PhysicsModule extends Module {
     public a_x: Vector3 = new Vector3();
     public v_x: Vector3 = new Vector3();
     public a_r: Vector3 = new Vector3();
@@ -8,7 +9,9 @@ export class PhysicsModule {
     public x_drag: number = 0;
     public r_drag: number = 0;
 
-    constructor(private gameObject: Object3D) { }
+    constructor(private gameObject: Object3D) {
+        super();
+    }
 
     public setA_X(acc: Vector3) {
         this.a_x = acc;
@@ -18,25 +21,25 @@ export class PhysicsModule {
         this.a_r = acc;
     }
 
-    public update(time: number) {
+    public update(timeDelta: number) {
         // update velocity with acceleration
-        this.v_x.add(this.a_x.clone().multiplyScalar(time));
+        this.v_x.add(this.a_x.clone().multiplyScalar(timeDelta));
         // apply drag
         if (this.x_drag) {
-            this.v_x.add(this.v_x.clone().multiplyScalar(-this.x_drag * time));
+            this.v_x.add(this.v_x.clone().multiplyScalar(-this.x_drag * timeDelta));
         }
         // update position with velocity
-        this.gameObject.position.add(this.v_x.clone().multiplyScalar(time));
+        this.gameObject.position.add(this.v_x.clone().multiplyScalar(timeDelta));
 
         // update velocity quaternion
-        this.v_r.add(this.a_r.clone().multiplyScalar(time));
+        this.v_r.add(this.a_r.clone().multiplyScalar(timeDelta));
         //apply drag
         if (this.r_drag) {
-            this.v_r.add(this.v_r.clone().multiplyScalar(-this.x_drag * time));
+            this.v_r.add(this.v_r.clone().multiplyScalar(-this.x_drag * timeDelta));
         }
         // update rotation
-        this.gameObject.rotateX(this.v_r.x * time);
-        this.gameObject.rotateY(this.v_r.y * time);
-        this.gameObject.rotateZ(this.v_r.z * time);
+        this.gameObject.rotateX(this.v_r.x * timeDelta);
+        this.gameObject.rotateY(this.v_r.y * timeDelta);
+        this.gameObject.rotateZ(this.v_r.z * timeDelta);
     }
 }
