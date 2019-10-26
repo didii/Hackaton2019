@@ -1,13 +1,17 @@
 import { GameObject } from './game-object';
-import { Scene, Vector3, Camera } from 'three';
+import { Scene, Vector3, Camera, Vector2 } from 'three';
 import { PhysicsModule } from './modules/physics-module';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export class Ship extends GameObject {
     private physics: PhysicsModule;
     private loader = new GLTFLoader();
-    private forwardSpeed: number = 1.9;
+    private isBoosting: boolean = false;
+    private boost: number = 50;
+    private forwardSpeed: number = 1.5;
+    private strafeSpeed: number = 2;
     private turnSpeed: number = 0.2;
+    private localDirections: Vector3 = new Vector3();
 
     constructor(private camera: Camera, position?: Vector3) {
         super();
@@ -34,7 +38,9 @@ export class Ship extends GameObject {
 
         scene.add(this);
 
-        window.addEventListener('keydown', e => this.onKey(e, true));
+        window.addEventListener('keydown', e => {
+            if (!e.repeat) this.onKey(e, true);
+        });
         window.addEventListener('keyup', e => this.onKey(e, false));
     }
 
@@ -43,29 +49,49 @@ export class Ship extends GameObject {
         this.physics.update(timeDelta);
     }
 
-    public onKey(key: KeyboardEvent, isDown: boolean) {
-        if (key.key === 'w') {
-            let forward = new Vector3(0, 0, -this.forwardSpeed).applyQuaternion(this.quaternion);
-            this.physics.a_x = isDown ? forward : new Vector3();
-        } else if (key.key === 's') {
-            let forward = new Vector3(0, 0, this.forwardSpeed).applyQuaternion(this.quaternion);
-            this.physics.a_x = isDown ? forward : new Vector3();
+    public onKey(event: KeyboardEvent, isDown: boolean) {
+        console.log({key: event.code, isDown});
+        if (event.code === 'ShiftLeft') {
+            this.isBoosting = isDown;
+            this.physics.a_x = this.localDirections.clone().multiplyScalar(this.isBoosting ? this.boost : 1).applyQuaternion(this.quaternion);
+            return;
         }
-        if (key.key === '4') {
-            this.physics.a_r.z = isDown ? this.turnSpeed : 0;
+
+        let isBoosting = this.isBoosting;
+        // Translations
+        if (event.code === 'KeyW' || event.code === 'KeyS') {
+            // Forward or backward
+            let forwardSpeed = this.forwardSpeed * (isBoosting ? this.boost : 1);
+            let sgn = isDown ? (event.key === 'w' ? -1 : 1) : 0;
+            this.localDirections.z = forwardSpeed * sgn;
+        } else if (event.code === 'KeyA' || event.code === 'KeyD') {
+            // Left/Right
+            let strafeSpeed = this.strafeSpeed * (isBoosting ? this.boost : 1);
+            let sgn = isDown ? (event.code === 'KeyA' ? -1 : 1) : 0;
+            this.localDirections.x = strafeSpeed * sgn;
+        } else if (event.code === 'KeyQ' || event.code === 'KeyE') {
+            // Up/Down
+            let strafeSpeed = this.strafeSpeed * (isBoosting ? this.boost : 1);
+            let sgn = isDown ? (event.code === 'KeyQ' ? -1 : 1) : 0;
+            this.localDirections.y = strafeSpeed * sgn;
         }
-        if (key.key === '6') {
-            this.physics.a_r.z = isDown ? -this.turnSpeed : 0;
+        this.physics.a_x = this.localDirections.clone().applyQuaternion(this.quaternion);
+
+        // Turning
+        let turnSpeed = this.turnSpeed * (isBoosting ? this.boost : 1);
+        if (event.code === 'KeyJ' || event.code === 'KeyL') {
+            // Left/right
+            let sgn = isDown ? (event.code === 'KeyJ' ? 1 : -1) : 0;
+            this.physics.a_r.y = turnSpeed * sgn;
+        } else if (event.code === 'KeyI' || event.code === 'KeyK') {
+            // Up/down
+            let sgn = isDown ? (event.code === 'KeyI' ? 1 : -1) : 0;
+            this.physics.a_r.x = turnSpeed * sgn;
         }
-        if (key.key === '8') {
-            this.physics.a_r.x = isDown ? -this.turnSpeed : 0;
-        } else if (key.key === '2') {
-            this.physics.a_r.x = isDown ? this.turnSpeed : 0;
-        }
-        if (key.key === 'a') {
-            this.physics.a_r.y = isDown ? this.turnSpeed : 0;
-        } else if (key.key === 'd') {
-            this.physics.a_r.y = isDown ? -this.turnSpeed : 0;
+        if (event.code === 'KeyU' || event.code === 'KeyO') {
+            // Roll
+            let sgn = isDown ? (event.code === 'KeyU' ? 1 : -1) : 0;
+            this.physics.a_r.z = turnSpeed * sgn;
         }
     }
 }
