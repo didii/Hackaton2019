@@ -11,7 +11,6 @@ export class Planet implements GameObject {
     }
 
     public update(): void {
-        this.mesh.position.x += 1;
-        this.mesh.position.y += 1;
+        this.mesh.rotation.y += 1 / 32 * 0.1;
     }
 }
