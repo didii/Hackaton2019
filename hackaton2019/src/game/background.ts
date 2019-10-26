@@ -1,7 +1,7 @@
 import { GameObject } from '@/game/game-object';
 import { Mesh } from 'three/src/objects/Mesh';
 import { Scene } from 'three/src/scenes/Scene';
-import { CubeTextureLoader, Texture } from 'three';
+import { CubeTextureLoader, Texture, LinearFilter } from 'three';
 
 export class Background extends GameObject {
 
@@ -19,7 +19,8 @@ export class Background extends GameObject {
             `${this.img}bottom4.png`,
             `${this.img}front5.png`,
             `${this.img}back6.png`
-        ])
+        ]);
+        this.background.minFilter = LinearFilter;
     }
 
     public init(scene: Scene): void {
