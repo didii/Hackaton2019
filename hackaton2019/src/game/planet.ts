@@ -5,11 +5,13 @@ import { PlanetType } from '@/game/enums/planet-type.enum';
 import { StaticItems } from '@/game/static-items';
 import { PlanetDefinition } from '@/game/planet-definition';
 import { PhysicsModule } from './modules/physics-module';
+import { MaterialModule } from './modules/material-module';
 
 export class Planet extends GameObject {
-    private mesh!: Mesh;
+    private mesh: Mesh;
     private planetDefinition: PlanetDefinition = new PlanetDefinition();
     private physics: PhysicsModule;
+    private material: MaterialModule;
 
     constructor(type?: PlanetType) {
         super();
@@ -20,19 +22,18 @@ export class Planet extends GameObject {
             type: randomizedType,
             isStar: randomizedType === PlanetType.sun
         });
+        this.mesh = PlanetFactory.create(this.planetDefinition);
+
+        // Modules
         this.physics = new PhysicsModule(this);
         this.physics.v_r.set(0, 0.1, 0);
+        this.material = new MaterialModule(this, this.mesh);
     }
 
     public init(scene: Scene): void {
-        this.mesh = PlanetFactory.create(this.planetDefinition);
         this.add(this.mesh);
         scene.add(this);
-        if (this.planetDefinition.isStar) {
-            this.position.set(0, 0, 0);
-        } else {
-            this.position.set(1, 0.5, -0.8);
-        }
+        this.position.set(this.randomNumberFromInterval(-50, 50), this.randomNumberFromInterval(-50, 50), this.randomNumberFromInterval(-50, 50));
     }
 
     public update(timeDelta: number): void {
@@ -40,6 +41,11 @@ export class Planet extends GameObject {
     }
 
     private randomIntFromInterval(min: number, max: number): number {
-        return Math.floor(Math.random() * (max - min + 1) + min);
+        return Math.floor(this.randomNumberFromInterval(min, max));
     }
+
+    private randomNumberFromInterval(min: number, max: number): number {
+        return Math.random() * (max - min + 1) + min;
+    }
+
 }

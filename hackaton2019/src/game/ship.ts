@@ -24,7 +24,7 @@ export class Ship extends GameObject {
     }
 
     public init(scene: Scene): void {
-        //this.add(this.mesh);
+        this.add(this.mesh);
         this.add(this.camera);
         
         scene.add(this);
@@ -38,17 +38,23 @@ export class Ship extends GameObject {
     }
 
     public onKey(key: KeyboardEvent, isDown: boolean) {
-        if (key.key === 'a') {
+        if (key.key === 'w') {
             let forward = new Vector3(0, 0, -this.forwardSpeed).applyQuaternion(this.quaternion);
             this.physics.a_x = isDown ? forward : new Vector3();
-        } else if (key.key === 'z') {
+        } else if (key.key === 's') {
             let forward = new Vector3(0, 0, this.forwardSpeed).applyQuaternion(this.quaternion);
             this.physics.a_x = isDown ? forward : new Vector3();
         }
+        if (key.key === 'a') {
+            this.physics.a_r.z = isDown ? this.turnSpeed : 0;
+        }
+        if (key.key === 'd') {
+            this.physics.a_r.z = isDown ? -this.turnSpeed : 0;
+        }
         if (key.key === '8') {
-            this.physics.a_r.x = isDown ? this.turnSpeed : 0;
-        } else if (key.key === '2') {
             this.physics.a_r.x = isDown ? -this.turnSpeed : 0;
+        } else if (key.key === '2') {
+            this.physics.a_r.x = isDown ? this.turnSpeed : 0;
         }
         if (key.key === '4') {
             this.physics.a_r.y = isDown ? this.turnSpeed : 0;

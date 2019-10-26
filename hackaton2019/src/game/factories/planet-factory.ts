@@ -7,7 +7,7 @@ export class PlanetFactory {
     private loader = new TextureLoader();
 
     public create(planet: PlanetDefinition): Mesh {
-        const geometry = new SphereGeometry(0.5, 32, 32);
+        const geometry = new SphereGeometry(10, 32, 32);
         const material = this.createPlanetMaterial(
             `${this.imagePath}${planet.type.toString()}/map.jpg`,
             `${this.imagePath}${planet.type.toString()}/bump.jpg`,
@@ -20,7 +20,7 @@ export class PlanetFactory {
         mesh.castShadow = true;
 
         if (planet.isStar) {
-            const light = new PointLight(StaticItems.lightColor, 3, 5);
+            const light = new PointLight(StaticItems.lightColor, 3, 500);
             light.castShadow = true;
             mesh.add(light);
 
