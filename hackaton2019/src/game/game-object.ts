@@ -1,6 +1,8 @@
 import { Scene } from 'three';
 
-export interface GameObject {
-    init(scene: Scene): void;
-    update(): void;
+export class GameObject {
+    public enabled: boolean = true;
+    public init(scene: Scene): void { }
+    public update(): void { }
+    public destroy(): void { }
 }

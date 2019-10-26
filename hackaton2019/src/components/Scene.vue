@@ -10,37 +10,25 @@ import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBas
 import { GameObject } from '@/game/game-object';
 import { Planet } from '@/game/planet';
 import { PlanetType } from '@/game/enums/planet-type.enum';
+import {ShipCamera} from '@/game/ship-camera';
+import SceneManager from '@/services/scene-manager';
 
 @Component
 export default class Scene extends Vue {
-    private camera!: PerspectiveCamera;
+    private camera!: ShipCamera;
     private renderer: WebGLRenderer = new WebGLRenderer();
-    private scene: TScene = new TScene();
-
-    private gameObjects: GameObject[] = [
-        new Planet()
-    ];
+    private sceneManager = SceneManager;
 
     private mounted() {
         let el = this.$refs.scene as HTMLDivElement;
-        this.camera = new PerspectiveCamera(
-            80,
-            el.clientWidth / el.clientHeight,
-            0.1,
-            1000
-        );
+        this.camera = new ShipCamera(el.clientWidth / el.clientHeight);
         this.renderer.setSize(el.clientWidth, el.clientHeight);
         el.append(this.renderer.domElement);
 
         const light = LightFactory.create(25, 25, 25);
 
-        this.scene.add(light);
-        this.camera.position.z = 2;
-
-        // Initialize all game objects
-        for (const go of this.gameObjects) {
-            go.init(this.scene);
-        }
+        SceneManager.addGameObject('earth', new Planet());
+        SceneManager.addObject(light);
 
         // Start update frames
         this.animate();
@@ -48,10 +36,10 @@ export default class Scene extends Vue {
 
     private animate(): void {
         requestAnimationFrame(this.animate);
-        for (const go of this.gameObjects) {
+        for (const go of SceneManager.gameObjects) {
             go.update();
         }
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(SceneManager.scene, this.camera.camera);
     }
 }
 </script>

@@ -3,7 +3,7 @@ import PlanetFactory from "@/game/factories/planet-factory";
 import { GameObject } from "./game-object";
 import { PlanetType } from '@/game/enums/planet-type.enum';
 
-export class Planet implements GameObject {
+export class Planet extends GameObject {
     private mesh!: Mesh;
 
     public init(scene: Scene): void {
