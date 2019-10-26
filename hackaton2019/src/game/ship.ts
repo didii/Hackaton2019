@@ -45,10 +45,10 @@ export class Ship extends GameObject {
             let forward = new Vector3(0, 0, this.forwardSpeed).applyQuaternion(this.quaternion);
             this.physics.a_x = isDown ? forward : new Vector3();
         }
-        if (key.key === 'a') {
+        if (key.key === '4') {
             this.physics.a_r.z = isDown ? this.turnSpeed : 0;
         }
-        if (key.key === 'd') {
+        if (key.key === '6') {
             this.physics.a_r.z = isDown ? -this.turnSpeed : 0;
         }
         if (key.key === '8') {
@@ -56,9 +56,9 @@ export class Ship extends GameObject {
         } else if (key.key === '2') {
             this.physics.a_r.x = isDown ? this.turnSpeed : 0;
         }
-        if (key.key === '4') {
+        if (key.key === 'a') {
             this.physics.a_r.y = isDown ? this.turnSpeed : 0;
-        } else if (key.key === '6') {
+        } else if (key.key === 'd') {
             this.physics.a_r.y = isDown ? -this.turnSpeed : 0;
         }
     }
