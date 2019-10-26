@@ -23,7 +23,7 @@ export default class Scene extends Vue {
 
     private mounted() {
         SceneManager.clear();
-        this.lastTime = new Date().getUTCMilliseconds();
+        this.lastTime = new Date().getTime();
         let el = this.$refs.scene as HTMLDivElement;
         this.renderer.setSize(el.clientWidth, el.clientHeight);
         el.append(this.renderer.domElement);
