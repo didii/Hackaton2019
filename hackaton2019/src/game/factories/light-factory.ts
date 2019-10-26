@@ -1,4 +1,4 @@
-import { Light, PointLight } from 'three';
+import { Light, PointLight, SpotLight, Vector3 } from 'three';
 
 export class LightFactory {
     public create(x: number, y: number, z: number): Light {
