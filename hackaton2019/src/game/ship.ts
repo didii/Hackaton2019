@@ -1,8 +1,7 @@
 import { GameObject } from './game-object';
-import { Scene, Vector3, Camera, PointLight } from 'three';
+import { Scene, Vector3, Camera } from 'three';
 import { PhysicsModule } from './modules/physics-module';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { StaticItems } from '@/game/static-items';
 
 export class Ship extends GameObject {
     private physics: PhysicsModule;

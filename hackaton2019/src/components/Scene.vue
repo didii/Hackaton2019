@@ -13,6 +13,7 @@ import { PlanetType } from '@/game/enums/planet-type.enum';
 import {ShipCamera} from '@/game/ship-camera';
 import SceneManager from '@/services/scene-manager';
 import { Ship } from '@/game/ship';
+import { Background } from '@/game/background';
 
 @Component
 export default class Scene extends Vue {
@@ -34,6 +35,7 @@ export default class Scene extends Vue {
         const ship = SceneManager.addGameObject('ship', new Ship(this.camera.camera), new Vector3(0, 0, 10));
         SceneManager.addGameObject('earth', new Planet(PlanetType.earth));
         SceneManager.addGameObject('sun', new Planet(PlanetType.sun));
+        SceneManager.addGameObject('background', new Background());
 
         // Start update frames
         this.animate();
