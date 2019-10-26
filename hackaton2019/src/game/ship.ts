@@ -1,10 +1,11 @@
 import { GameObject } from './game-object';
-import { Scene, Mesh, CylinderGeometry, MeshStandardMaterial, Vector3, Camera } from 'three';
+import { Scene, Mesh, CylinderGeometry, MeshStandardMaterial, Vector3, Camera, Euler } from 'three';
 import { Key } from 'ts-key-enum';
+import { PhysicsModule } from './modules/physics-module';
 
 export class Ship extends GameObject {
     public mesh!: Mesh;
-    private acceleration: Vector3 = new Vector3();
+    private physics: PhysicsModule;
 
     constructor(private camera: Camera, position?: Vector3) {
         super();
@@ -16,6 +17,7 @@ export class Ship extends GameObject {
         const material = new MeshStandardMaterial({ color: 0x702fe0 });
         this.mesh = new Mesh(geometry, material);
         this.camera.lookAt(this.mesh.position);
+        this.physics = new PhysicsModule(this);
     }
 
     public init(scene: Scene): void {
@@ -29,14 +31,24 @@ export class Ship extends GameObject {
     }
 
     public update(): void {
-        this.position.add(this.acceleration);
+        this.physics.update(1);
     }
 
     public onKey(key: KeyboardEvent, isDown: boolean) {
-        if (key.code === 'Space') {
-            this.acceleration.z = isDown ? -0.1 : 0;
-        } else if (key.key === 'AltLeft') {
-            this.acceleration.z = isDown ? 0.1 : 0;
+        if (key.key === 'a') {
+            this.physics.a_x.z = isDown ? -0.1 : 0;
+        } else if (key.key === 'z') {
+            this.physics.a_x.z = isDown ? 0.1 : 0;
+        }
+        if (key.key === '8') {
+            this.physics.a_r.y = isDown ? 0.1 : 0;
+        } else if (key.key === '2') {
+            this.physics.a_r.y = isDown ? -0.1 : 0;
+        }
+        if (key.key === '6') {
+            this.physics.a_r.x = isDown ? 0.1 : 0;
+        } else if (key.key === '4') {
+            this.physics.a_r.x = isDown ? -0.1 : 0;
         }
     }
 }

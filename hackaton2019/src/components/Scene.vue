@@ -6,7 +6,7 @@
 import PlanetFactory from "@/game/factories/planet-factory";
 import LightFactory from "@/game/factories/light-factory";
 import { Component, Vue } from "vue-property-decorator";
-import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBasicMaterial, Mesh, SphereGeometry, MeshPhongMaterial, ImageUtils, TextureLoader, MeshStandardMaterial } from "three";
+import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBasicMaterial, Mesh, SphereGeometry, MeshPhongMaterial, ImageUtils, TextureLoader, MeshStandardMaterial, Vector3 } from "three";
 import { GameObject } from '@/game/game-object';
 import { Planet } from '@/game/planet';
 import { PlanetType } from '@/game/enums/planet-type.enum';
@@ -27,7 +27,7 @@ export default class Scene extends Vue {
 
         this.camera = new ShipCamera(el.clientWidth / el.clientHeight);
         this.camera.init();
-        const ship = SceneManager.addGameObject('ship', new Ship(this.camera.camera));
+        const ship = SceneManager.addGameObject('ship', new Ship(this.camera.camera), new Vector3(0, 0, 10));
         SceneManager.addGameObject('earth', new Planet());
         SceneManager.addObject(LightFactory.create(25, 25, 25));
 

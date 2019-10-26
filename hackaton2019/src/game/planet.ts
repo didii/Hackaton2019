@@ -9,6 +9,7 @@ export class Planet extends GameObject {
     private planetType: PlanetType = PlanetType.earth;
 
     constructor(type?: PlanetType) {
+        super();
         if (!type) {
             this.planetType = StaticItems.planetDefinitions[this.randomIntFromInterval(1, StaticItems.planetDefinitions.length)].type;
         }else {
