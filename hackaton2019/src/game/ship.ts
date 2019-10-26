@@ -6,6 +6,8 @@ import { PhysicsModule } from './modules/physics-module';
 export class Ship extends GameObject {
     public mesh!: Mesh;
     private physics: PhysicsModule;
+    private forwardSpeed: number = 0.7;
+    private turnSpeed: number = 0.2;
 
     constructor(private camera: Camera, position?: Vector3) {
         super();
@@ -30,25 +32,27 @@ export class Ship extends GameObject {
         window.addEventListener('keyup', e => this.onKey(e, false));
     }
 
-    public update(): void {
-        this.physics.update(1);
+    public update(timeDelta: number): void {
+        this.physics.update(timeDelta);
     }
 
     public onKey(key: KeyboardEvent, isDown: boolean) {
         if (key.key === 'a') {
-            this.physics.a_x.z = isDown ? -0.1 : 0;
+            let forward = new Vector3(0, 0, -this.forwardSpeed).applyQuaternion(this.quaternion);
+            this.physics.a_x = isDown ? forward : new Vector3();
         } else if (key.key === 'z') {
-            this.physics.a_x.z = isDown ? 0.1 : 0;
+            let forward = new Vector3(0, 0, this.forwardSpeed).applyQuaternion(this.quaternion);
+            this.physics.a_x = isDown ? forward : new Vector3();
         }
         if (key.key === '8') {
-            this.physics.a_r.y = isDown ? 0.1 : 0;
+            this.physics.a_r.x = isDown ? this.turnSpeed : 0;
         } else if (key.key === '2') {
-            this.physics.a_r.y = isDown ? -0.1 : 0;
+            this.physics.a_r.x = isDown ? -this.turnSpeed : 0;
         }
-        if (key.key === '6') {
-            this.physics.a_r.x = isDown ? 0.1 : 0;
-        } else if (key.key === '4') {
-            this.physics.a_r.x = isDown ? -0.1 : 0;
+        if (key.key === '4') {
+            this.physics.a_r.y = isDown ? this.turnSpeed : 0;
+        } else if (key.key === '6') {
+            this.physics.a_r.y = isDown ? -this.turnSpeed : 0;
         }
     }
 }

@@ -23,7 +23,7 @@ export class PhysicsModule {
         this.gameObject.position.add(this.v_x.clone().multiplyScalar(time));
 
         // update velocity quaternion
-        this.a_r.add(this.a_r.clone().multiplyScalar(time));
+        this.v_r.add(this.a_r.clone().multiplyScalar(time));
         this.gameObject.rotateX(this.v_r.x * time);
         this.gameObject.rotateY(this.v_r.y * time);
         this.gameObject.rotateZ(this.v_r.z * time);

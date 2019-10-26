@@ -31,9 +31,9 @@ export class SceneManager {
         return gameObject;
     }
 
-    public update(): void {
+    public update(timeDelta: number): void {
         for (const go of this.inSceneGameObjects.filter(x => x.gameObject.enabled)) {
-            go.gameObject.update();
+            go.gameObject.update(timeDelta);
         }
     }
 

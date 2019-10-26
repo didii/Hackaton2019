@@ -19,8 +19,11 @@ export default class Scene extends Vue {
     private camera!: ShipCamera;
     private renderer: WebGLRenderer = new WebGLRenderer();
     private sceneManager = SceneManager;
+    private lastTime = new Date().getTime();
 
     private mounted() {
+        SceneManager.clear();
+        this.lastTime = new Date().getUTCMilliseconds();
         let el = this.$refs.scene as HTMLDivElement;
         this.renderer.setSize(el.clientWidth, el.clientHeight);
         el.append(this.renderer.domElement);
@@ -36,11 +39,14 @@ export default class Scene extends Vue {
     }
 
     private animate(): void {
+        let prevTime = this.lastTime;
+        this.lastTime = new Date().getTime();
+        let delta = (this.lastTime - prevTime) / 1000;
         requestAnimationFrame(this.animate);
         for (const go of SceneManager.gameObjects) {
-            go.update();
+            go.update(delta);
         }
-        this.camera.update();
+        this.camera.update(delta);
         this.renderer.render(SceneManager.scene, this.camera.camera);
     }
 }
