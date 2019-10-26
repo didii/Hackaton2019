@@ -31,7 +31,7 @@ export class PlanetFactory {
                 blending: AdditiveBlending
             });
             var sprite = new Sprite(spriteMaterial);
-            sprite.scale.set(2, 2, 1.0);
+            sprite.scale.set(40, 40, 20);
             mesh.add(sprite); // this centers the glow at the mesh
         }
 
