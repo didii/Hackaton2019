@@ -1,10 +1,10 @@
 import { GameObject } from './game-object';
-import { Scene, Mesh, CylinderGeometry, MeshStandardMaterial, Vector3, Camera, ObjectLoader } from 'three';
+import { Scene, Vector3, Camera, PointLight } from 'three';
 import { PhysicsModule } from './modules/physics-module';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { StaticItems } from '@/game/static-items';
 
 export class Ship extends GameObject {
-    public mesh!: Mesh;
     private physics: PhysicsModule;
     private loader = new GLTFLoader();
     private forwardSpeed: number = 0.7;
@@ -17,24 +17,20 @@ export class Ship extends GameObject {
         }
         this.camera.position.set(position.x, position.y + 2, position.z + 5);
 
-        const geometry = new CylinderGeometry(0.25, 1, 2, 25, 25);
-        const material = new MeshStandardMaterial({ color: 0x702fe0 });
+        this.loader.load('models/ship.glb', (obj) => {
+            obj.scene.castShadow = true;
+            obj.scene.receiveShadow = true;
+            this.add(obj.scene);
+            this.camera.lookAt(obj.scene.position);
+        });
 
-        this.mesh = new Mesh(geometry, material);
-        this.camera.lookAt(this.mesh.position);
         this.physics = new PhysicsModule(this);
         this.physics.x_drag = 0.2;
         this.physics.r_drag = 0.2;
     }
 
     public init(scene: Scene): void {
-        this.add(this.mesh);
         this.add(this.camera);
-
-        this.loader.load('models/ship.glb', function (obj) {
-            // Add the loaded object to the scene
-            scene.add(obj.scene);
-        })
 
         scene.add(this);
 

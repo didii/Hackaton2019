@@ -18,4 +18,5 @@ export class StaticItems {
     ];
 
     static lightColor = new Color('white');
+    static redColor = new Color('red');
 }

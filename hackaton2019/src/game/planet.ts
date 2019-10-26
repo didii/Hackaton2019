@@ -5,13 +5,11 @@ import { PlanetType } from '@/game/enums/planet-type.enum';
 import { StaticItems } from '@/game/static-items';
 import { PlanetDefinition } from '@/game/planet-definition';
 import { PhysicsModule } from './modules/physics-module';
-import { MaterialModule } from './modules/material-module';
 
 export class Planet extends GameObject {
     private mesh: Mesh;
     private planetDefinition: PlanetDefinition = new PlanetDefinition();
     private physics: PhysicsModule;
-    private material: MaterialModule;
 
     constructor(type?: PlanetType) {
         super();
@@ -27,7 +25,6 @@ export class Planet extends GameObject {
         // Modules
         this.physics = new PhysicsModule(this);
         this.physics.v_r.set(0, 0.1, 0);
-        this.material = new MaterialModule(this, this.mesh);
     }
 
     public init(scene: Scene): void {

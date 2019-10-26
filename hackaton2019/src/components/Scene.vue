@@ -42,7 +42,7 @@ export default class Scene extends Vue {
     private animate(): void {
         let prevTime = this.lastTime;
         this.lastTime = new Date().getTime();
-        let delta = (this.lastTime - prevTime) / 1000;
+        let delta = 0.01;//(this.lastTime - prevTime) / 1000;
         requestAnimationFrame(this.animate);
         for (const go of SceneManager.gameObjects) {
             go.update(delta);
