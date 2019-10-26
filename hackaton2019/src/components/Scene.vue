@@ -5,6 +5,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
+import PlanetFactory from '@/services/planet-factory';
 
 @Component
 export default class Scene extends Vue {
@@ -19,20 +20,22 @@ export default class Scene extends Vue {
         this.renderer.setSize(el.clientWidth, el.clientHeight);
         el.append(this.renderer.domElement);
 
-        const geometry = new BoxGeometry(1, 1, 1);
-        const material = new MeshBasicMaterial({color: 0x00ff00});
-        const cube = new Mesh(geometry, material);
+        const planet = PlanetFactory.create();
 
-        this.scene.add(cube);
+        this.scene.add(planet);
         this.camera.position.z = 5;
 
         const animate = () => {
             requestAnimationFrame(animate);
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
+            planet.rotation.x += 0.01;
+            planet.rotation.y += 0.01;
             this.renderer.render(this.scene, this.camera);
         }
         animate();
+    }
+
+    private generatePlanet() {
+
     }
 }
 </script>
