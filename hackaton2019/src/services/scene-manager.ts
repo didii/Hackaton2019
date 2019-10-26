@@ -3,9 +3,9 @@ import { GameObject } from '@/game/game-object';
 
 export class SceneManager {
     public scene: Scene;
-    public inSceneGameObjects: InSceneGameObject[] = [];
+    public inSceneGameObjects: {[key: string]: GameObject} = {};
     public get gameObjects(): GameObject[] {
-        return this.inSceneGameObjects.map(x => x.gameObject);
+        return Object.values(this.inSceneGameObjects);
     }
 
     constructor(scene?: Scene) {
@@ -24,7 +24,7 @@ export class SceneManager {
         if (position) {
             gameObject.position.set(position.x, position.y, position.z);
         }
-        this.inSceneGameObjects.push({ name, gameObject });
+        this.inSceneGameObjects[name] = gameObject;
         if (!skipInit) {
             gameObject.init(this.scene);
         }
@@ -32,26 +32,32 @@ export class SceneManager {
     }
 
     public update(timeDelta: number): void {
-        for (const go of this.inSceneGameObjects.filter(x => x.gameObject.enabled)) {
-            go.gameObject.update(timeDelta);
+        for (const key of Object.keys(this.inSceneGameObjects)) {
+            this.inSceneGameObjects[key].update(timeDelta);
         }
     }
 
     public destroy(name: string, skipDestroy?: boolean): void {
-        let toRemove = this.inSceneGameObjects.filter(x => x.name === name);
+        const obj = this.inSceneGameObjects[name];
         if (!skipDestroy) {
-            for (const go of toRemove) {
-                go.gameObject.destroy();
-            }
+            obj.destroy();
         }
-        this.inSceneGameObjects = this.inSceneGameObjects.filter(x => x.name !== name);
+        delete this.inSceneGameObjects[name];
     }
 
     public clear() {
         while (this.scene.children.length > 0) {
             this.scene.remove(this.scene.children[0]);
         }
-        this.inSceneGameObjects = [];
+        this.inSceneGameObjects = {};
+    }
+
+    public findInSphere(center: Vector3, radius: number): Object3D[] {
+        return this.scene.children.filter(x => {
+            const pos = x.position.clone();
+            const length = pos.addScaledVector(center, -1).length();
+            return length <= radius;
+        })
     }
 }
 

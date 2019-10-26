@@ -28,13 +28,14 @@ export class Planet extends GameObject {
     }
 
     public init(scene: Scene): void {
+        super.init(scene);
         this.add(this.mesh);
         scene.add(this);
         this.position.set(this.randomNumberFromInterval(-50, 50), this.randomNumberFromInterval(-50, 50), this.randomNumberFromInterval(-50, 50));
     }
 
     public update(timeDelta: number): void {
-        this.physics.update(timeDelta);
+        super.update(timeDelta);
     }
 
     private randomIntFromInterval(min: number, max: number): number {

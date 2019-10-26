@@ -30,6 +30,7 @@ export class Ship extends GameObject {
     }
 
     public init(scene: Scene): void {
+        super.init(scene);
         this.add(this.camera);
 
         scene.add(this);
@@ -39,6 +40,7 @@ export class Ship extends GameObject {
     }
 
     public update(timeDelta: number): void {
+        super.update(timeDelta);
         this.physics.update(timeDelta);
     }
 
