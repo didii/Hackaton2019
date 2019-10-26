@@ -1,6 +1,5 @@
 import { GameObject } from './game-object';
 import { Scene, Mesh, CylinderGeometry, MeshStandardMaterial, Vector3, Camera, Euler } from 'three';
-import { Key } from 'ts-key-enum';
 import { PhysicsModule } from './modules/physics-module';
 
 export class Ship extends GameObject {
@@ -20,6 +19,8 @@ export class Ship extends GameObject {
         this.mesh = new Mesh(geometry, material);
         this.camera.lookAt(this.mesh.position);
         this.physics = new PhysicsModule(this);
+        this.physics.x_drag = 0.2;
+        this.physics.r_drag = 0.2;
     }
 
     public init(scene: Scene): void {
