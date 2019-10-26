@@ -17,7 +17,7 @@ import { Ship } from '@/game/ship';
 @Component
 export default class Scene extends Vue {
     private camera!: ShipCamera;
-    private renderer: WebGLRenderer = new WebGLRenderer();
+    private renderer: WebGLRenderer = new WebGLRenderer({ antialias: true });
     private sceneManager = SceneManager;
     private lastTime = new Date().getTime();
 
