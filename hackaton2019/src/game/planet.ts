@@ -14,6 +14,7 @@ import SceneManager from '@/services/scene-manager';
 import { Helper } from './enums/helper';
 
 export class Planet extends GameObject {
+    private static sound: HTMLAudioElement;
     private mesh: Mesh;
     private planetDefinition: PlanetDefinition = new PlanetDefinition();
     public modules: ModulesCollection = new ModulesCollection({
@@ -36,6 +37,9 @@ export class Planet extends GameObject {
             radius: Helper.rand(100, 200),
         });
         this.mesh = PlanetFactory.create(this.planetDefinition);
+        if (!Planet.sound) {
+            Planet.sound = new Audio('sounds/plop.mp3')
+        }
     }
 
     public init(scene: Scene): void {
@@ -46,7 +50,7 @@ export class Planet extends GameObject {
             density: Helper.rand(8, 12) * (this.planetDefinition.isStar ? 10 : 1),
             geometry: this.mesh.geometry as Geometry,
         });
-        this.modules.vicinity!.init({ range: 1000 });
+        this.modules.vicinity!.init({ range: 10000 });
         this.modules.collision!.init({
             geometry: this.mesh.geometry as Geometry,
             onCollision: this.onCollision,
@@ -59,7 +63,9 @@ export class Planet extends GameObject {
         if (this.planetDefinition.isStar) {
             this.position.set(0, 0, 0);
         } else {
-            this.position.set(Helper.rand(-500, 500), Helper.rand(-500, 500), Helper.rand(-500, 500));
+            const max = 6000;
+            const rnd = () => Helper.rand(-max, max);
+            this.position.set(rnd(), rnd(), rnd());
         }
     }
 
@@ -73,6 +79,7 @@ export class Planet extends GameObject {
 
         if (this.modules.material!.mass < other.modules.material!.mass) {
             // if we are smaller, destroy ourselves
+            Planet.sound.play();
             SceneManager.destroy(this.name);
         } else {
             // otherwise absorb to gain POOOOOOOOOOOOOWER!

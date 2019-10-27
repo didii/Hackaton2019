@@ -6,6 +6,6 @@ export class ShipCamera extends GameObject {
 
     constructor(ratio: number) {
         super('mainCamera');
-        this.camera = new PerspectiveCamera(80, ratio, 0.1, 50000);
+        this.camera = new PerspectiveCamera(80, ratio, 0.1, 75000);
     }
 }

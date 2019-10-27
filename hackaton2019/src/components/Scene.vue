@@ -5,8 +5,8 @@
 <script lang="ts">
 import PlanetFactory from "@/game/factories/planet-factory";
 import LightFactory from "@/game/factories/light-factory";
-import { Component, Vue } from "vue-property-decorator";
-import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBasicMaterial, Mesh, SphereGeometry, MeshPhongMaterial, ImageUtils, TextureLoader, MeshStandardMaterial, Vector3 } from "three";
+import { Component, Vue, Prop } from "vue-property-decorator";
+import { PerspectiveCamera, WebGLRenderer, Scene as TScene, BoxGeometry, MeshBasicMaterial, Mesh, SphereGeometry, MeshPhongMaterial, ImageUtils, TextureLoader, MeshStandardMaterial, Vector3, Plane } from "three";
 import { GameObject } from '@/game/game-object';
 import { Planet } from '@/game/planet';
 import { PlanetType } from '@/game/enums/planet-type.enum';
@@ -24,6 +24,8 @@ export default class Scene extends Vue {
     private renderer: WebGLRenderer = new WebGLRenderer({ antialias: true });
     private sceneManager = SceneManager;
     private lastTime = new Date().getTime();
+    @Prop({required: true})
+    private options!: {speed: number};
 
     private mounted() {
         SceneManager.clear();
@@ -35,16 +37,17 @@ export default class Scene extends Vue {
         this.camera = new ShipCamera(el.clientWidth / el.clientHeight);
         this.camera.init();
         
-        const ship = SceneManager.addGameObject(new Ship(this.camera.camera), new Vector3(0, 0, 300));
+        const ship = SceneManager.addGameObject(new Ship(this.camera.camera), new Vector3(0, 0, 1500));
         // First create the sun
-        const sun = SceneManager.addGameObject(new Planet('sun', PlanetType.sun));
-        for (const pDef of Consts.planetDefinitions) {
-            if (pDef.isStar) continue;
-            const planet = SceneManager.addGameObject(new Planet(pDef.type.toString(), pDef.type));
-            const toTheSun = planet.position.clone().addScaledVector(sun.position, -1);
-            const angle = Helper.rand(0, 2 * Math.PI);
-            // ????????????????????????????????????????????????????????????????????????????????????????????????????
-            // get perpendicular vector at the random angle and assign it to v_x of the physics module
+        const amount = 25;
+        for (let i = 0; i < amount; i++) {
+            const idx = Helper.randInt(0, Consts.planetDefinitions.length - 1);
+            const def = Consts.planetDefinitions[idx];
+            const planet = SceneManager.addGameObject(new Planet('planet' + i, def.type));
+            const maxSpeed = 20;
+            const rnd = () => Helper.rand(-maxSpeed, maxSpeed);
+            const speed = new Vector3(rnd(), rnd(), rnd());
+            planet.modules.physics!.v_x.set(speed.x, speed.y, speed.z);
         }
         SceneManager.addGameObject(new Background());
 
@@ -63,7 +66,7 @@ export default class Scene extends Vue {
         }
         let prevTime = this.lastTime;
         this.lastTime = new Date().getTime();
-        let delta = 0.02;//(this.lastTime - prevTime) / 1000;
+        let delta = this.options.speed;//(this.lastTime - prevTime) / 1000;
         for (const go of SceneManager.gameObjects) {
             go.update(delta);
         }

@@ -1,5 +1,5 @@
 import { GameObject } from '../game-object';
-import { Mesh, Material, Geometry } from 'three';
+import { Geometry } from 'three';
 import { Module } from './module';
 
 export class MaterialModule extends Module {

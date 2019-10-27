@@ -19,7 +19,7 @@ export class Ship extends GameObject {
         vicinity: new VicinityModule(this),
         physics: new PhysicsModule(this),
         gravity: new GravityModule(this)
-    })
+    });
 
     constructor(private camera: Camera, position?: Vector3) {
         super('ship');
@@ -71,6 +71,7 @@ export class Ship extends GameObject {
         if (event.code === 'ShiftLeft') {
             this.isBoosting = isDown;
             for (const name of Object.keys(physics.forces)) {
+                if (!name.startsWith('T:')) continue;
                 const force = physics.forces[name];
                 if (this.isBoosting) {
                     force.multiplyScalar(this.boost);

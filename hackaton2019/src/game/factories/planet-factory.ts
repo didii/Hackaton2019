@@ -20,7 +20,7 @@ export class PlanetFactory {
         mesh.castShadow = true;
 
         if (def.isStar) {
-            const light = new PointLight(Consts.lightColor, 3, 500);
+            const light = new PointLight(Consts.lightColor, 3, 5000);
             light.castShadow = true;
             mesh.add(light);
 
