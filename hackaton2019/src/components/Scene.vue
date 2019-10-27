@@ -33,7 +33,7 @@ export default class Scene extends Vue {
         this.camera = new ShipCamera(el.clientWidth / el.clientHeight);
         this.camera.init();
         
-        const ship = SceneManager.addGameObject('ship', new Ship(this.camera.camera), new Vector3(0, 0, 10));
+        const ship = SceneManager.addGameObject('ship', new Ship(this.camera.camera), new Vector3(0, 0, 300));
         StaticItems.planetDefinitions.forEach(x => SceneManager.addGameObject(x.type.toString(), new Planet(x.type)));
         SceneManager.addGameObject('background', new Background());
 

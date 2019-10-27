@@ -50,10 +50,16 @@ export class Ship extends GameObject {
     }
 
     public onKey(event: KeyboardEvent, isDown: boolean) {
-        console.log({key: event.code, isDown});
         if (event.code === 'ShiftLeft') {
             this.isBoosting = isDown;
-            
+            for (const name of Object.keys(this.physics.forces)) {
+                const force = this.physics.forces[name];
+                if (this.isBoosting) {
+                    force.multiplyScalar(this.boost);
+                } else {
+                    force.multiplyScalar(1 / this.boost);
+                }
+            }
             return;
         }
 

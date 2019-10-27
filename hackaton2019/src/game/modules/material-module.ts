@@ -3,7 +3,6 @@ import { Mesh, Material, Geometry } from 'three';
 import { Module } from './module';
 
 export class MaterialModule extends Module {
-    public enabled: boolean = false;
     public volume: number = 0;
     public mass: number = 0;
     public density: number = 0;

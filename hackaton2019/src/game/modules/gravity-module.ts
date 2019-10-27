@@ -2,16 +2,18 @@ import { GameObject } from '../game-object';
 import { PhysicsModule } from './physics-module';
 import { MaterialModule } from './material-module';
 import { Module } from './module';
-import SceneManager from '@/services/scene-manager';
-import { Vector3, Mesh } from 'three';
+import { Vector3 } from 'three';
+import { VicinityModule } from './vicinity-module';
 
 export class GravityModule extends Module {
-    private sceneManager = SceneManager;
     private get physics(): PhysicsModule {
         return this.gameObject.modules.physics!;
     }
     private get material(): MaterialModule {
         return this.gameObject.modules.material!;
+    }
+    private get vicinity(): VicinityModule {
+        return this.gameObject.modules.vicinity!;
     }
 
     constructor(
@@ -22,7 +24,7 @@ export class GravityModule extends Module {
 
     public update(timeDelta: number): void {
         // Find all objects in the vicinity
-        let inRange = this.sceneManager.findInSphere(this.gameObject.position, 100);
+        let inRange = this.vicinity.get();
         let a = new Vector3();
         for (const other of inRange) {
             if (other !== this.gameObject && GameObject.is(other) && other.modules.material) {

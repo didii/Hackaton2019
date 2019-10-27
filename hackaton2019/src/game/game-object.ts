@@ -3,6 +3,8 @@ import { Module } from './modules/module';
 import { GravityModule } from './modules/gravity-module';
 import { MaterialModule } from './modules/material-module';
 import { PhysicsModule } from './modules/physics-module';
+import { VicinityModule } from './modules/vicinity-module';
+import { CollisionModule } from './modules/collision-module';
 
 export class GameObject extends Object3D {
     private __type: string = 'GameObject';
@@ -32,7 +34,9 @@ export class ModulesCollection {
         Object.assign(this, init);
     }
     [key: string]: Module | undefined;
-    public gravity?: GravityModule;
     public material?: MaterialModule;
     public physics?: PhysicsModule;
+    public vicinity?: VicinityModule;
+    public gravity?: GravityModule;
+    public collision?: CollisionModule;
 }

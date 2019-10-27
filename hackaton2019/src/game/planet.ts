@@ -8,13 +8,14 @@ import { PhysicsModule } from './modules/physics-module';
 import { ModulesCollection } from './game-object';
 import { MaterialModule } from './modules/material-module';
 import { GravityModule } from './modules/gravity-module';
+import { VicinityModule } from './modules/vicinity-module';
 
 export class Planet extends GameObject {
     private mesh: Mesh;
     private planetDefinition: PlanetDefinition = new PlanetDefinition();
-    private physics: PhysicsModule;
     public modules: ModulesCollection = new ModulesCollection({
         physics: new PhysicsModule(this),
+        vicinity: new VicinityModule(this),
         material: new MaterialModule(this),
         gravity: new GravityModule(this)
     })
@@ -29,18 +30,18 @@ export class Planet extends GameObject {
             isStar: randomizedType === PlanetType.sun
         });
         this.mesh = PlanetFactory.create(this.planetDefinition);
-
-        // Modules
-        this.physics = new PhysicsModule(this);
-        this.physics.v_r.set(0, 0.1, 0);
     }
 
     public init(scene: Scene): void {
         super.init(scene);
+
+        // Modules
         this.modules.material!.init({
             density: 5,
             geometry: this.mesh.geometry as Geometry,
         });
+        this.modules.vicinity!.init({range: 1000});
+
         this.add(this.mesh);
         scene.add(this);
 
