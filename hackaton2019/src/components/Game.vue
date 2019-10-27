@@ -1,6 +1,9 @@
 <template>
     <div data-component="game">
-        <scene />
+        <div class="options">
+            <button @click="close">Enable/Disable</button>
+        </div>
+        <scene v-if="enabled" />
     </div>
 </template>
 
@@ -14,8 +17,17 @@ import Scene from '@/components/Scene.vue';
     }
 })
 export default class Game extends Vue {
-    private mounted() {
-
+    private enabled: boolean = true;
+    private close() {
+        this.enabled = !this.enabled;
     }
 }
 </script>
+
+<style scoped>
+.options {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+</style>

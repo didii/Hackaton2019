@@ -18,6 +18,7 @@ import { StaticItems } from '../game/static-items';
 
 @Component
 export default class Scene extends Vue {
+    private enabled: boolean = true;
     private camera!: ShipCamera;
     private renderer: WebGLRenderer = new WebGLRenderer({ antialias: true });
     private sceneManager = SceneManager;
@@ -41,11 +42,18 @@ export default class Scene extends Vue {
         this.animate();
     }
 
-    private animate(): void {
+    private beforeDestroy() {
+        this.enabled = false;
+        SceneManager.scene.dispose();
+    }
+
+    private animate() {
+        if (this.enabled) {
+            requestAnimationFrame(this.animate);
+        }
         let prevTime = this.lastTime;
         this.lastTime = new Date().getTime();
         let delta = 0.01;//(this.lastTime - prevTime) / 1000;
-        requestAnimationFrame(this.animate);
         for (const go of SceneManager.gameObjects) {
             go.update(delta);
         }
