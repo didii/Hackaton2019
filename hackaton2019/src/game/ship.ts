@@ -53,7 +53,7 @@ export class Ship extends GameObject {
         console.log({key: event.code, isDown});
         if (event.code === 'ShiftLeft') {
             this.isBoosting = isDown;
-            this.physics.a_x = this.localDirections.clone().multiplyScalar(this.isBoosting ? this.boost : 1).applyQuaternion(this.quaternion);
+            
             return;
         }
 
@@ -63,19 +63,21 @@ export class Ship extends GameObject {
             // Forward or backward
             let forwardSpeed = this.forwardSpeed * (isBoosting ? this.boost : 1);
             let sgn = isDown ? (event.key === 'w' ? -1 : 1) : 0;
-            this.localDirections.z = forwardSpeed * sgn;
+            let force = new Vector3(0, 0, 1).multiplyScalar(forwardSpeed * sgn);
+            this.physics.setForce('T:FB', force);
         } else if (event.code === 'KeyA' || event.code === 'KeyD') {
             // Left/Right
             let strafeSpeed = this.strafeSpeed * (isBoosting ? this.boost : 1);
             let sgn = isDown ? (event.code === 'KeyA' ? -1 : 1) : 0;
-            this.localDirections.x = strafeSpeed * sgn;
+            let force = new Vector3(1, 0, 0).multiplyScalar(strafeSpeed * sgn);
+            this.physics.setForce('T:LR', force);
         } else if (event.code === 'KeyQ' || event.code === 'KeyE') {
             // Up/Down
             let strafeSpeed = this.strafeSpeed * (isBoosting ? this.boost : 1);
             let sgn = isDown ? (event.code === 'KeyQ' ? -1 : 1) : 0;
-            this.localDirections.y = strafeSpeed * sgn;
+            let force = new Vector3(0, 1, 0).multiplyScalar(strafeSpeed * sgn);
+            this.physics.setForce('T:UD', force);
         }
-        this.physics.a_x = this.localDirections.clone().applyQuaternion(this.quaternion);
 
         // Turning
         let turnSpeed = this.turnSpeed * (isBoosting ? this.boost : 1);

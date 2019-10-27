@@ -1,16 +1,23 @@
-import { Mesh, Scene } from "three";
+import { Mesh, Scene, Geometry } from "three";
 import PlanetFactory from "@/game/factories/planet-factory";
 import { GameObject } from "./game-object";
 import { PlanetType } from '@/game/enums/planet-type.enum';
 import { StaticItems } from '@/game/static-items';
 import { PlanetDefinition } from '@/game/planet-definition';
 import { PhysicsModule } from './modules/physics-module';
-import planetFactory from '@/game/factories/planet-factory';
+import { ModulesCollection } from './game-object';
+import { MaterialModule } from './modules/material-module';
+import { GravityModule } from './modules/gravity-module';
 
 export class Planet extends GameObject {
     private mesh: Mesh;
     private planetDefinition: PlanetDefinition = new PlanetDefinition();
     private physics: PhysicsModule;
+    public modules: ModulesCollection = new ModulesCollection({
+        physics: new PhysicsModule(this),
+        material: new MaterialModule(this),
+        gravity: new GravityModule(this)
+    })
 
     constructor(type?: PlanetType) {
         super();
@@ -30,13 +37,17 @@ export class Planet extends GameObject {
 
     public init(scene: Scene): void {
         super.init(scene);
+        this.modules.material!.init({
+            density: 5,
+            geometry: this.mesh.geometry as Geometry,
+        });
         this.add(this.mesh);
         scene.add(this);
 
         if(this.planetDefinition.isStar){
             this.position.set(0,0,0);
         }else {
-            this.position.set(planetFactory.randomNumberFromInterval(-500, 500), planetFactory.randomNumberFromInterval(-500, 500), planetFactory.randomNumberFromInterval(-500, 500));
+            this.position.set(PlanetFactory.randomNumberFromInterval(-500, 500), PlanetFactory.randomNumberFromInterval(-500, 500), PlanetFactory.randomNumberFromInterval(-500, 500));
         }
     }
 
@@ -45,6 +56,6 @@ export class Planet extends GameObject {
     }
 
     private randomIntFromInterval(min: number, max: number): number {
-        return Math.floor(planetFactory.randomNumberFromInterval(min, max));
+        return Math.floor(PlanetFactory.randomNumberFromInterval(min, max));
     }
 }

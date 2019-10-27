@@ -1,14 +1,17 @@
 import { Vector3, Object3D } from 'three';
+import { Module } from './module';
 
-export class PhysicsModule {
+export class PhysicsModule extends Module {
     public a_x: Vector3 = new Vector3();
     public v_x: Vector3 = new Vector3();
     public a_r: Vector3 = new Vector3();
     public v_r: Vector3 = new Vector3();
     public x_drag: number = 0;
     public r_drag: number = 0;
+    public forces: { [key: string]: Vector3 } = {};
 
     constructor(private gameObject: Object3D) {
+        super();
     }
 
     public setA_X(acc: Vector3) {
@@ -19,9 +22,23 @@ export class PhysicsModule {
         this.a_r = acc;
     }
 
+    public setForce(name: string, a: Vector3) {
+        this.forces[name] = a;
+    }
+
+    public removeForce(name: string) {
+        delete this.forces[name];
+    }
+
     public update(timeDelta: number) {
+        // Compute total force
+        const totalForce = new Vector3();
+        for (const name of Object.keys(this.forces)) {
+            const force = this.forces[name];
+            totalForce.add(force);
+        }
         // update velocity with acceleration
-        this.v_x.add(this.a_x.clone().multiplyScalar(timeDelta));
+        this.v_x.add(totalForce.clone().multiplyScalar(timeDelta));
         // apply drag
         if (this.x_drag) {
             this.v_x.add(this.v_x.clone().multiplyScalar(-this.x_drag * timeDelta));
