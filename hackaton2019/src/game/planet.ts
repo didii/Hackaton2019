@@ -1,8 +1,8 @@
-import { Mesh, Scene, Geometry } from "three";
+import { Mesh, Scene, Geometry, SphereGeometry } from "three";
 import PlanetFactory from "@/game/factories/planet-factory";
 import { GameObject } from "./game-object";
 import { PlanetType } from '@/game/enums/planet-type.enum';
-import { StaticItems } from '@/game/static-items';
+import { Consts } from '@/game/consts';
 import { PlanetDefinition } from '@/game/planet-definition';
 import { PhysicsModule } from './modules/physics-module';
 import { ModulesCollection } from './game-object';
@@ -10,6 +10,8 @@ import { MaterialModule } from './modules/material-module';
 import { GravityModule } from './modules/gravity-module';
 import { VicinityModule } from './modules/vicinity-module';
 import { CollisionModule } from './modules/collision-module';
+import SceneManager from '@/services/scene-manager';
+import { Helper } from './enums/helper';
 
 export class Planet extends GameObject {
     private mesh: Mesh;
@@ -24,12 +26,14 @@ export class Planet extends GameObject {
 
     constructor(name: string, type?: PlanetType) {
         super(name);
-
-        const randomizedType = type ? type : StaticItems.planetDefinitions[this.randomIntFromInterval(1, StaticItems.planetDefinitions.length)].type;
+        if (!type) {
+            type = Consts.planetDefinitions[Helper.randInt(1, Consts.planetDefinitions.length)].type;
+        }
 
         this.planetDefinition = new PlanetDefinition({
-            type: randomizedType,
-            isStar: randomizedType === PlanetType.sun
+            type: type,
+            isStar: type === PlanetType.sun,
+            radius: Helper.rand(100, 200),
         });
         this.mesh = PlanetFactory.create(this.planetDefinition);
     }
@@ -39,13 +43,14 @@ export class Planet extends GameObject {
 
         // Modules
         this.modules.material!.init({
-            density: PlanetFactory.randomNumberFromInterval(0.8, 1.2) * (this.planetDefinition.isStar ? 10 : 1),
+            density: Helper.rand(8, 12) * (this.planetDefinition.isStar ? 10 : 1),
             geometry: this.mesh.geometry as Geometry,
         });
         this.modules.vicinity!.init({range: 1000});
         this.modules.collision!.init({
             geometry: this.mesh.geometry as Geometry,
-            onCollision: () => console.log('boem pattat'),
+            onCollision: this.onCollision,
+            grace: this.planetDefinition.radius * 0.2,
         });
 
         this.add(this.mesh);
@@ -54,7 +59,7 @@ export class Planet extends GameObject {
         if(this.planetDefinition.isStar){
             this.position.set(0,0,0);
         }else {
-            this.position.set(PlanetFactory.randomNumberFromInterval(-500, 500), PlanetFactory.randomNumberFromInterval(-500, 500), PlanetFactory.randomNumberFromInterval(-500, 500));
+            this.position.set(Helper.rand(-500, 500), Helper.rand(-500, 500), Helper.rand(-500, 500));
         }
     }
 
@@ -62,13 +67,20 @@ export class Planet extends GameObject {
         super.update(timeDelta);
     }
 
-    private randomIntFromInterval(min: number, max: number): number {
-        return Math.floor(PlanetFactory.randomNumberFromInterval(min, max));
-    }
-
     private onCollision(other: GameObject) {
+        // We only care about collisions with other objects with a material module
+        // if (!(other.modules && other.modules.material)) return;
+
         if (this.modules.material!.mass < other.modules.material!.mass) {
-            this.destroy();
+            // if we are smaller, destroy ourselves
+            SceneManager.destroy(this.name);
+        } else {
+            // otherwise absorb to gain POOOOOOOOOOOOOWER!
+            let thisMaterial = this.modules.material!;
+            let otherMaterial = other.modules.material!;
+            let newSize = Math.sqrt((thisMaterial.mass + otherMaterial.mass)/(thisMaterial.density * Math.PI));
+            this.mesh.geometry = new SphereGeometry(newSize, 32, 32);
+            thisMaterial.forceUpdate();
         }
     }
 }

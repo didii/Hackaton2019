@@ -1,46 +1,41 @@
 import { Mesh, SphereGeometry, MeshPhongMaterial, TextureLoader, Color, PointLight, SpriteMaterial, AdditiveBlending, Sprite } from 'three';
 import { PlanetDefinition } from '@/game/planet-definition';
-import { StaticItems } from '@/game/static-items';
+import { Consts } from '@/game/consts';
 
 export class PlanetFactory {
     private imagePath = 'img/textures/';
     private loader = new TextureLoader();
 
-    public create(planet: PlanetDefinition): Mesh {
-        const size = this.randomNumberFromInterval(1, 200);
-        const geometry = new SphereGeometry(0.5 * size, 32, 32);
+    public create(def: PlanetDefinition): Mesh {
+        const geometry = new SphereGeometry(def.radius, 32, 32);
         const material = this.createPlanetMaterial(
-            `${this.imagePath}${planet.type.toString()}/map.jpg`,
-            `${this.imagePath}${planet.type.toString()}/bump.jpg`,
-            `${this.imagePath}${planet.type.toString()}/spec.jpg`,
-            planet.isStar
+            `${this.imagePath}${def.type.toString()}/map.jpg`,
+            `${this.imagePath}${def.type.toString()}/bump.jpg`,
+            `${this.imagePath}${def.type.toString()}/spec.jpg`,
+            def.isStar
         );
 
         const mesh = new Mesh(geometry, material);
         mesh.receiveShadow = true;
         mesh.castShadow = true;
 
-        if (planet.isStar) {
-            const light = new PointLight(StaticItems.lightColor, 3, 500);
+        if (def.isStar) {
+            const light = new PointLight(Consts.lightColor, 3, 500);
             light.castShadow = true;
             mesh.add(light);
 
             var spriteMaterial = new SpriteMaterial({
                 map: this.loader.load('img/glow.png'),
-                color: StaticItems.lightColor,
+                color: Consts.lightColor,
                 transparent: true,
                 blending: AdditiveBlending
             });
             var sprite = new Sprite(spriteMaterial);
-            sprite.scale.set(2 * size, 2 * size, 1 * size);
+            sprite.scale.set(2 * def.radius, 2 * def.radius, 1 * def.radius);
             mesh.add(sprite); // this centers the glow at the mesh
         }
 
         return mesh;
-    }
-
-    public randomNumberFromInterval(min: number, max: number): number {
-        return Math.random() * (max - min + 1) + min;
     }
 
     private createPlanetMaterial(texturePath: string, bumpPath: string, specularPath: string, isStar: boolean): MeshPhongMaterial {
@@ -57,7 +52,7 @@ export class PlanetFactory {
         }
 
         if (isStar) {
-            material.emissive = StaticItems.lightColor;
+            material.emissive = Consts.lightColor;
         }
 
         material.shininess = 0;

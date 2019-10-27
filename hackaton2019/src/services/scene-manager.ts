@@ -39,9 +39,12 @@ export class SceneManager {
 
     public destroy(name: string, skipDestroy?: boolean): void {
         const obj = this.inSceneGameObjects[name];
+        if (!obj) return;
+        console.log('Destroying: ' + name);
         if (!skipDestroy) {
             obj.destroy();
         }
+        this.scene.remove(obj);
         delete this.inSceneGameObjects[name];
     }
 

@@ -2,7 +2,7 @@ import { PlanetDefinition } from '@/game/planet-definition';
 import { PlanetType } from '@/game/enums/planet-type.enum';
 import { Color } from 'three';
 
-export class StaticItems {
+export class Consts {
     static planetDefinitions = [
         new PlanetDefinition({ type: PlanetType.earth }),
         new PlanetDefinition({ type: PlanetType.jupiter }),

@@ -6,6 +6,7 @@ import { Vector3 } from 'three';
 import { VicinityModule } from './vicinity-module';
 
 export class GravityModule extends Module {
+    public readonly G: number = 1.5;
     private get physics(): PhysicsModule {
         return this.gameObject.modules.physics!;
     }
@@ -30,7 +31,7 @@ export class GravityModule extends Module {
             if (other !== this.gameObject && GameObject.is(other) && other.modules.material) {
                 let dir = other.position.clone().addScaledVector(this.gameObject.position, -1);
                 let dist = dir.length();
-                let amp = this.material.mass * other.modules.material.mass / (dist * dist);
+                let amp = this.G * other.modules.material.mass / (dist * dist);
                 a.add(dir.normalize().multiplyScalar(amp * timeDelta));
             }
         }

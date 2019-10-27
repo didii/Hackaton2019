@@ -1,9 +1,9 @@
 import { Light, PointLight, SpotLight, Vector3 } from 'three';
-import { StaticItems } from '@/game/static-items';
+import { Consts } from '@/game/consts';
 
 export class LightFactory {
     public create(x: number, y: number, z: number): Light {
-        const light = new PointLight(StaticItems.lightColor, 3, 100);
+        const light = new PointLight(Consts.lightColor, 3, 100);
         if (x && y && z) {
             light.position.set(x, y, z);
         }

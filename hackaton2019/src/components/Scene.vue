@@ -14,7 +14,7 @@ import {ShipCamera} from '@/game/ship-camera';
 import SceneManager from '@/services/scene-manager';
 import { Ship } from '@/game/ship';
 import { Background } from '@/game/background';
-import { StaticItems } from '../game/static-items';
+import { Consts } from '../game/consts';
 
 @Component
 export default class Scene extends Vue {
@@ -35,7 +35,7 @@ export default class Scene extends Vue {
         this.camera.init();
         
         const ship = SceneManager.addGameObject(new Ship(this.camera.camera), new Vector3(0, 0, 300));
-        StaticItems.planetDefinitions.forEach(x => SceneManager.addGameObject(new Planet(x.type.toString(), x.type)));
+        Consts.planetDefinitions.forEach(x => SceneManager.addGameObject(new Planet(x.type.toString(), x.type)));
         SceneManager.addGameObject(new Background());
 
         // Start update frames
@@ -53,7 +53,7 @@ export default class Scene extends Vue {
         }
         let prevTime = this.lastTime;
         this.lastTime = new Date().getTime();
-        let delta = 0.01;//(this.lastTime - prevTime) / 1000;
+        let delta = 0.02;//(this.lastTime - prevTime) / 1000;
         for (const go of SceneManager.gameObjects) {
             go.update(delta);
         }
