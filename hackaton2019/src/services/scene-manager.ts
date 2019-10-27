@@ -20,11 +20,11 @@ export class SceneManager {
         return obj;
     }
 
-    public addGameObject<T extends GameObject>(name: string, gameObject: T, position?: Vector3, skipInit?: boolean): T {
+    public addGameObject<T extends GameObject>(gameObject: T, position?: Vector3, skipInit?: boolean): T {
         if (position) {
             gameObject.position.set(position.x, position.y, position.z);
         }
-        this.inSceneGameObjects[name] = gameObject;
+        this.inSceneGameObjects[gameObject.name] = gameObject;
         if (!skipInit) {
             gameObject.init(this.scene);
         }

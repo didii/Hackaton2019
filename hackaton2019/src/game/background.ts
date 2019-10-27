@@ -10,7 +10,7 @@ export class Background extends GameObject {
     private img = 'img/background/achtergrond_';
 
     constructor() {
-        super();
+        super('background');
 
         this.background = this.loader.load([
             `${this.img}right1.png`,

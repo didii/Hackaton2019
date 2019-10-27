@@ -11,6 +11,10 @@ export class GameObject extends Object3D {
     public enabled: boolean = true;
     public modules: ModulesCollection = new ModulesCollection();
 
+    constructor(public name: string) {
+        super();
+    }
+
     public init(scene?: Scene): void {}
 
     public update(timeDelta: number): void {

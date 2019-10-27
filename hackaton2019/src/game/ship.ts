@@ -1,10 +1,12 @@
-import { GameObject } from './game-object';
-import { Scene, Vector3, Camera, Vector2 } from 'three';
+import { GameObject, ModulesCollection } from './game-object';
+import { Scene, Vector3, Camera } from 'three';
 import { PhysicsModule } from './modules/physics-module';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { MaterialModule } from './modules/material-module';
+import { VicinityModule } from './modules/vicinity-module';
+import { GravityModule } from './modules/gravity-module';
 
 export class Ship extends GameObject {
-    private physics: PhysicsModule;
     private loader = new GLTFLoader();
     private isBoosting: boolean = false;
     private boost: number = 50;
@@ -12,8 +14,15 @@ export class Ship extends GameObject {
     private strafeSpeed: number = 3;
     private turnSpeed: number = 1;
 
+    public modules: ModulesCollection = new ModulesCollection({
+        material: new MaterialModule(this),
+        vicinity: new VicinityModule(this),
+        physics: new PhysicsModule(this),
+        gravity: new GravityModule(this)
+    })
+
     constructor(private camera: Camera, position?: Vector3) {
-        super();
+        super('ship');
         if (!position) {
             position = new Vector3();
         }
@@ -26,9 +35,8 @@ export class Ship extends GameObject {
             this.camera.lookAt(obj.scene.position);
         });
 
-        this.physics = new PhysicsModule(this);
-        this.physics.x_drag = 0.2;
-        this.physics.r_drag = 0.2;
+        this.modules.physics!.x_drag = 0.2;
+        this.modules.physics!.r_drag = 0.2;
     }
 
     public init(scene: Scene): void {
@@ -45,14 +53,14 @@ export class Ship extends GameObject {
 
     public update(timeDelta: number): void {
         super.update(timeDelta);
-        this.physics.update(timeDelta);
     }
 
     public onKey(event: KeyboardEvent, isDown: boolean) {
+        let physics = this.modules.physics!;
         if (event.code === 'ShiftLeft') {
             this.isBoosting = isDown;
-            for (const name of Object.keys(this.physics.forces)) {
-                const force = this.physics.forces[name];
+            for (const name of Object.keys(physics.forces)) {
+                const force = physics.forces[name];
                 if (this.isBoosting) {
                     force.multiplyScalar(this.boost);
                 } else {
@@ -69,36 +77,36 @@ export class Ship extends GameObject {
             let forwardSpeed = this.forwardSpeed * (isBoosting ? this.boost : 1);
             let sgn = isDown ? (event.key === 'w' ? -1 : 1) : 0;
             let force = new Vector3(0, 0, 1).multiplyScalar(forwardSpeed * sgn);
-            this.physics.setForce('T:FB', force);
+            physics.setForce('T:FB', force);
         } else if (event.code === 'KeyA' || event.code === 'KeyD') {
             // Left/Right
             let strafeSpeed = this.strafeSpeed * (isBoosting ? this.boost : 1);
             let sgn = isDown ? (event.code === 'KeyA' ? -1 : 1) : 0;
             let force = new Vector3(1, 0, 0).multiplyScalar(strafeSpeed * sgn);
-            this.physics.setForce('T:LR', force);
+            physics.setForce('T:LR', force);
         } else if (event.code === 'KeyQ' || event.code === 'KeyE') {
             // Up/Down
             let strafeSpeed = this.strafeSpeed * (isBoosting ? this.boost : 1);
             let sgn = isDown ? (event.code === 'KeyQ' ? -1 : 1) : 0;
             let force = new Vector3(0, 1, 0).multiplyScalar(strafeSpeed * sgn);
-            this.physics.setForce('T:UD', force);
+            physics.setForce('T:UD', force);
         }
 
         // Turning
-        let turnSpeed = this.turnSpeed * (isBoosting ? this.boost : 1);
+        let turnSpeed = this.turnSpeed;
         if (event.code === 'KeyJ' || event.code === 'KeyL') {
             // Left/right
             let sgn = isDown ? (event.code === 'KeyJ' ? 1 : -1) : 0;
-            this.physics.a_r.y = turnSpeed * sgn;
+            physics.a_r.y = turnSpeed * sgn;
         } else if (event.code === 'KeyI' || event.code === 'KeyK') {
             // Up/down
             let sgn = isDown ? (event.code === 'KeyI' ? 1 : -1) : 0;
-            this.physics.a_r.x = turnSpeed * sgn;
+            physics.a_r.x = turnSpeed * sgn;
         }
         if (event.code === 'KeyU' || event.code === 'KeyO') {
             // Roll
             let sgn = isDown ? (event.code === 'KeyU' ? 1 : -1) : 0;
-            this.physics.a_r.z = turnSpeed * sgn;
+            physics.a_r.z = turnSpeed * sgn;
         }
     }
 }
