@@ -7,7 +7,8 @@ export class PlanetFactory {
     private loader = new TextureLoader();
 
     public create(planet: PlanetDefinition): Mesh {
-        const geometry = new SphereGeometry(10, 32, 32);
+        const size = this.randomNumberFromInterval(1, 200);
+        const geometry = new SphereGeometry(0.5 * size, 32, 32);
         const material = this.createPlanetMaterial(
             `${this.imagePath}${planet.type.toString()}/map.jpg`,
             `${this.imagePath}${planet.type.toString()}/bump.jpg`,
@@ -27,15 +28,19 @@ export class PlanetFactory {
             var spriteMaterial = new SpriteMaterial({
                 map: this.loader.load('img/glow.png'),
                 color: StaticItems.lightColor,
-                transparent: false,
+                transparent: true,
                 blending: AdditiveBlending
             });
             var sprite = new Sprite(spriteMaterial);
-            sprite.scale.set(40, 40, 20);
+            sprite.scale.set(2 * size, 2 * size, 1 * size);
             mesh.add(sprite); // this centers the glow at the mesh
         }
 
         return mesh;
+    }
+
+    public randomNumberFromInterval(min: number, max: number): number {
+        return Math.random() * (max - min + 1) + min;
     }
 
     private createPlanetMaterial(texturePath: string, bumpPath: string, specularPath: string, isStar: boolean): MeshPhongMaterial {

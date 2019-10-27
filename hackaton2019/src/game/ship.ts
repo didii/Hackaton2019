@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 export class Ship extends GameObject {
     private physics: PhysicsModule;
     private loader = new GLTFLoader();
-    private forwardSpeed: number = 0.7;
+    private forwardSpeed: number = 1.9;
     private turnSpeed: number = 0.2;
 
     constructor(private camera: Camera, position?: Vector3) {

@@ -5,6 +5,7 @@ import { PlanetType } from '@/game/enums/planet-type.enum';
 import { StaticItems } from '@/game/static-items';
 import { PlanetDefinition } from '@/game/planet-definition';
 import { PhysicsModule } from './modules/physics-module';
+import planetFactory from '@/game/factories/planet-factory';
 
 export class Planet extends GameObject {
     private mesh: Mesh;
@@ -31,7 +32,12 @@ export class Planet extends GameObject {
         super.init(scene);
         this.add(this.mesh);
         scene.add(this);
-        this.position.set(this.randomNumberFromInterval(-50, 50), this.randomNumberFromInterval(-50, 50), this.randomNumberFromInterval(-50, 50));
+
+        if(this.planetDefinition.isStar){
+            this.position.set(0,0,0);
+        }else {
+            this.position.set(planetFactory.randomNumberFromInterval(-500, 500), planetFactory.randomNumberFromInterval(-500, 500), planetFactory.randomNumberFromInterval(-500, 500));
+        }
     }
 
     public update(timeDelta: number): void {
@@ -39,11 +45,6 @@ export class Planet extends GameObject {
     }
 
     private randomIntFromInterval(min: number, max: number): number {
-        return Math.floor(this.randomNumberFromInterval(min, max));
+        return Math.floor(planetFactory.randomNumberFromInterval(min, max));
     }
-
-    private randomNumberFromInterval(min: number, max: number): number {
-        return Math.random() * (max - min + 1) + min;
-    }
-
 }
