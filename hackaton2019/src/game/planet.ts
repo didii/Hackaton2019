@@ -37,7 +37,7 @@ export class Planet extends GameObject {
 
         // Modules
         this.modules.material!.init({
-            density: 5,
+            density: 1 * (this.planetDefinition.isStar ? 10 : 1),
             geometry: this.mesh.geometry as Geometry,
         });
         this.modules.vicinity!.init({range: 1000});

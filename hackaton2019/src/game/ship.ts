@@ -8,10 +8,9 @@ export class Ship extends GameObject {
     private loader = new GLTFLoader();
     private isBoosting: boolean = false;
     private boost: number = 50;
-    private forwardSpeed: number = 1.5;
-    private strafeSpeed: number = 2;
-    private turnSpeed: number = 0.2;
-    private localDirections: Vector3 = new Vector3();
+    private forwardSpeed: number = 4;
+    private strafeSpeed: number = 3;
+    private turnSpeed: number = 1;
 
     constructor(private camera: Camera, position?: Vector3) {
         super();
