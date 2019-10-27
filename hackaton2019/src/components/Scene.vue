@@ -15,6 +15,7 @@ import SceneManager from '@/services/scene-manager';
 import { Ship } from '@/game/ship';
 import { Background } from '@/game/background';
 import { Consts } from '../game/consts';
+import { Helper } from '../game/enums/helper';
 
 @Component
 export default class Scene extends Vue {
@@ -35,7 +36,16 @@ export default class Scene extends Vue {
         this.camera.init();
         
         const ship = SceneManager.addGameObject(new Ship(this.camera.camera), new Vector3(0, 0, 300));
-        Consts.planetDefinitions.forEach(x => SceneManager.addGameObject(new Planet(x.type.toString(), x.type)));
+        // First create the sun
+        const sun = SceneManager.addGameObject(new Planet('sun', PlanetType.sun));
+        for (const pDef of Consts.planetDefinitions) {
+            if (pDef.isStar) continue;
+            const planet = SceneManager.addGameObject(new Planet(pDef.type.toString(), pDef.type));
+            const toTheSun = planet.position.clone().addScaledVector(sun.position, -1);
+            const angle = Helper.rand(0, 2 * Math.PI);
+            // ????????????????????????????????????????????????????????????????????????????????????????????????????
+            // get perpendicular vector at the random angle and assign it to v_x of the physics module
+        }
         SceneManager.addGameObject(new Background());
 
         // Start update frames

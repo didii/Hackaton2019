@@ -4,6 +4,7 @@ import { Color } from 'three';
 
 export class Consts {
     static planetDefinitions = [
+        new PlanetDefinition({ type: PlanetType.sun }),
         new PlanetDefinition({ type: PlanetType.earth }),
         new PlanetDefinition({ type: PlanetType.jupiter }),
         new PlanetDefinition({ type: PlanetType.mars }),
@@ -14,7 +15,6 @@ export class Consts {
         new PlanetDefinition({ type: PlanetType.saturn }),
         new PlanetDefinition({ type: PlanetType.uranus }),
         new PlanetDefinition({ type: PlanetType.venus }),
-        new PlanetDefinition({ type: PlanetType.sun })
     ];
 
     static lightColor = new Color('white');

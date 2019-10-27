@@ -1,5 +1,5 @@
 import { GameObject, ModulesCollection } from './game-object';
-import { Scene, Vector3, Camera } from 'three';
+import { Scene, Vector3, Camera, SphereGeometry } from 'three';
 import { PhysicsModule } from './modules/physics-module';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MaterialModule } from './modules/material-module';
@@ -42,6 +42,17 @@ export class Ship extends GameObject {
     public init(scene: Scene): void {
         super.init(scene);
         this.add(this.camera);
+
+        let geometry = new SphereGeometry(1);
+        this.modules.material!.init({
+            geometry: geometry,
+            density: 0.1,
+        });
+        // this.modules.collision!.init({
+        //     geometry: geometry,
+        //     grace: 0,
+        // });
+        this.modules.vicinity!.init({range: 1000});
 
         scene.add(this);
 

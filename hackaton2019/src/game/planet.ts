@@ -46,7 +46,7 @@ export class Planet extends GameObject {
             density: Helper.rand(8, 12) * (this.planetDefinition.isStar ? 10 : 1),
             geometry: this.mesh.geometry as Geometry,
         });
-        this.modules.vicinity!.init({range: 1000});
+        this.modules.vicinity!.init({ range: 1000 });
         this.modules.collision!.init({
             geometry: this.mesh.geometry as Geometry,
             onCollision: this.onCollision,
@@ -56,9 +56,9 @@ export class Planet extends GameObject {
         this.add(this.mesh);
         scene.add(this);
 
-        if(this.planetDefinition.isStar){
-            this.position.set(0,0,0);
-        }else {
+        if (this.planetDefinition.isStar) {
+            this.position.set(0, 0, 0);
+        } else {
             this.position.set(Helper.rand(-500, 500), Helper.rand(-500, 500), Helper.rand(-500, 500));
         }
     }
@@ -78,7 +78,7 @@ export class Planet extends GameObject {
             // otherwise absorb to gain POOOOOOOOOOOOOWER!
             let thisMaterial = this.modules.material!;
             let otherMaterial = other.modules.material!;
-            let newSize = Math.sqrt((thisMaterial.mass + otherMaterial.mass)/(thisMaterial.density * Math.PI));
+            let newSize = Math.sqrt((thisMaterial.mass + otherMaterial.mass) / (thisMaterial.density * Math.PI));
             this.mesh.geometry = new SphereGeometry(newSize, 32, 32);
             thisMaterial.forceUpdate();
         }
